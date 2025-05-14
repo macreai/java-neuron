@@ -17,7 +17,11 @@ public class ButterworthFilter implements IIRFilter {
                     Butterworth butterworth = new Butterworth();
                     butterworth.lowPass(order, samplingRate, cutoff);
                     List<Double> result = new ArrayList<>();
-                    iterator.forEachRemaining(value -> result.add(butterworth.filter(value)));
+                    iterator.forEachRemaining(value -> {
+                        double filtered = butterworth.filter(value);
+                        double rounded = Math.round(filtered * 100.0) / 100.0;
+                        result.add(rounded);
+                    });
                     return result.iterator();
                 },
                 Encoders.DOUBLE()
@@ -31,7 +35,11 @@ public class ButterworthFilter implements IIRFilter {
                     Butterworth butterworth = new Butterworth();
                     butterworth.highPass(order, samplingRate, cutoff);
                     List<Double> result = new ArrayList<>();
-                    iterator.forEachRemaining(value -> result.add(butterworth.filter(value)));
+                    iterator.forEachRemaining(value -> {
+                        double filtered = butterworth.filter(value);
+                        double rounded = Math.round(filtered * 100.0) / 100.0;
+                        result.add(rounded);
+                    });
                     return result.iterator();
                 },
                 Encoders.DOUBLE()
@@ -52,7 +60,11 @@ public class ButterworthFilter implements IIRFilter {
                     Butterworth butterworth = new Butterworth();
                     butterworth.bandPass(order, samplingRate, centerFreq, bandwidth);
                     List<Double> result = new ArrayList<>();
-                    iterator.forEachRemaining(value -> result.add(butterworth.filter(value)));
+                    iterator.forEachRemaining(value -> {
+                        double filtered = butterworth.filter(value);
+                        double rounded = Math.round(filtered * 100.0) / 100.0;
+                        result.add(rounded);
+                    });
                     return result.iterator();
                 },
                 Encoders.DOUBLE()
@@ -73,7 +85,11 @@ public class ButterworthFilter implements IIRFilter {
                     Butterworth butterworth = new Butterworth();
                     butterworth.bandStop(order, samplingRate, centerFreq, bandwidth);
                     List<Double> result = new ArrayList<>();
-                    iterator.forEachRemaining(value -> result.add(butterworth.filter(value)));
+                    iterator.forEachRemaining(value -> {
+                        double filtered = butterworth.filter(value);
+                        double rounded = Math.round(filtered * 100.0) / 100.0;
+                        result.add(rounded);
+                    });
                     return result.iterator();
                 },
                 Encoders.DOUBLE()

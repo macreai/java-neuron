@@ -35,10 +35,8 @@ public class ECGPlotter {
 
                 String[] values = line.split(",");
 
-                // Ambil nilai ECG Filtered
                 double ecgFiltered = Double.parseDouble(values[1]);
 
-                // Hitung waktu berdasarkan sample index (4 ms per sample karena 250Hz)
                 double timeMs = sampleIndex * (1000.0 / 250.0);
 
                 series.add(timeMs, ecgFiltered);

@@ -69,7 +69,7 @@ public class ButterworthFilterTest {
 
         result.show(100);
 
-        String outputPath = "src/main/resources/output_ecg_filtered.csv";
+        String outputPath = "src/main/resources/output_ecg_filtered";
 
         result.coalesce(1)
                 .write()
@@ -120,7 +120,7 @@ public class ButterworthFilterTest {
 
         result.show(100);
 
-        String outputPath = "src/main/resources/output_ecg_filtered.csv";
+        String outputPath = "src/main/resources/output_ecg_filtered";
 
         result.coalesce(1)
                 .write()

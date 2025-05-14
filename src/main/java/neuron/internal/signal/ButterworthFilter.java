@@ -28,6 +28,14 @@ public class ButterworthFilter implements IIRFilter {
         );
     }
 
+    /***
+     * BASELINE WANDER ECG
+     * @param signal
+     * @param samplingRate
+     * @param order
+     * @param cutoff
+     * @return
+     */
     @Override
     public Dataset<Double> highPassFilter(Dataset<Double> signal, double samplingRate, int order, double cutoff) {
         return signal.mapPartitions(

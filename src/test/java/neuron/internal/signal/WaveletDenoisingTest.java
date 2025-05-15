@@ -45,7 +45,7 @@ class WaveletDenoisingTest {
         filtered.show();
 
         WaveletDenoising wavelet = new WaveletDenoising();
-        Dataset<Double> cleanSignal = wavelet.waveletTransform(filtered, 250);
+        Dataset<Double> cleanSignal = wavelet.waveletTransform(filtered, 256);
 
         cleanSignal.show();
     }

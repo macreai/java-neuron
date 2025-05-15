@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import scala.Tuple2;
 
+import java.nio.file.Paths;
+
 public class ButterworthFilterTest {
 
     private static SparkSession spark;
@@ -111,7 +113,7 @@ public class ButterworthFilterTest {
                 .filter(df.col("'Time'").isNotNull())
                 .as(Encoders.STRING());
 
-        Dataset<Row> filteredECG1 = filtered.withColumnRenamed("value", "ECG1_Filtered");
+        Dataset<Row> filteredECG1 = filtered.withColumnRenamed("value", "'ECG1_Filtered'");
 
         Dataset<Row> result = timeValues
                 .withColumn("row_index", functions.monotonically_increasing_id())

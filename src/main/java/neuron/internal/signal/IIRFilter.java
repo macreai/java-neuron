@@ -10,7 +10,7 @@ interface IIRFilter {
 
     Dataset<Double> highPassFilter(Dataset<Double> signal, double samplingRate, int order, double cutoff);
 
-    Dataset<Double> bandPassFilter(Dataset<Double> signal, double samplingRate, float lowCut, float highCut, int order);
+    Dataset<Double> bandPassFilter(Dataset<Double> signal, double samplingRate, double lowCut, double highCut, int order);
 
-    Dataset<Double> bandStopFilter(Dataset<Double> signal, double samplingRate, float lowCut, float highCut, int order);
+    Dataset<Double> bandStopFilter(Dataset<Double> signal, double samplingRate, double lowCut, double highCut, int order);
 }

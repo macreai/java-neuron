@@ -131,4 +131,52 @@ public class ButterworthFilterTest {
                 .csv(outputPath);
     }
 
+    @Test
+    public void testBandPassFilterECG1() {
+        Dataset<Row> df = spark.read().option("header", true).csv("src/main/resources/06995_AF_2_hours.csv");
+
+        Dataset<Double> ecgValues = df.select(df.col("'ECG1'").cast("double"))
+                .filter(df.col("'ECG1'").isNotNull())
+                .as(Encoders.DOUBLE());
+
+        ButterworthFilter filter = new ButterworthFilter();
+        Dataset<Double> filtered = filter
+                .bandPassFilter(ecgValues, 250, 0.5, 40.0, 4);
+
+        filtered.show(100);
+    }
+
+    @Test
+    public void testBandPassFilterECG1_withCSV() {
+        Dataset<Row> df = spark.read().option("header", true).csv("src/main/resources/06995_AF.csv");
+
+        Dataset<Double> ecgValues = df.select(df.col("'ECG1'").cast("double"))
+                .filter(df.col("'ECG1'").isNotNull())
+                .as(Encoders.DOUBLE());
+
+        ButterworthFilter filter = new ButterworthFilter();
+        Dataset<Double> filtered = filter
+                .bandPassFilter(ecgValues, 250.0, 0.5, 40, 4);
+
+        Dataset<String> timeValues = df.select(df.col("'Time'").cast("string"))
+                .filter(df.col("'Time'").isNotNull())
+                .as(Encoders.STRING());
+
+        Dataset<Row> filteredECG1 = filtered.withColumnRenamed("value", "'ECG1_Filtered'");
+
+        Dataset<Row> result = timeValues
+                .withColumn("row_index", functions.monotonically_increasing_id())
+                .join(filteredECG1.withColumn("row_index", functions.monotonically_increasing_id()), "row_index")
+                .drop("row_index");
+
+        result.show(100);
+
+        String outputPath = "src/main/resources/output_ecg_filtered";
+
+        result.coalesce(1)
+                .write()
+                .mode(SaveMode.Overwrite)
+                .option("header", "true")
+                .csv(outputPath);
+    }
 }

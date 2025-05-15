@@ -55,7 +55,7 @@ public class ButterworthFilter implements IIRFilter {
     }
 
     @Override
-    public Dataset<Double> bandPassFilter(Dataset<Double> signal, double samplingRate, float lowCut, float highCut, int order) {
+    public Dataset<Double> bandPassFilter(Dataset<Double> signal, double samplingRate, double lowCut, double highCut, int order) {
         if (lowCut >= highCut) {
             throw new IllegalArgumentException("Low cutoff frequency must be less than high cutoff frequency.");
         }
@@ -80,7 +80,7 @@ public class ButterworthFilter implements IIRFilter {
     }
 
     @Override
-    public Dataset<Double> bandStopFilter(Dataset<Double> signal, double samplingRate, float lowCut, float highCut, int order) {
+    public Dataset<Double> bandStopFilter(Dataset<Double> signal, double samplingRate, double lowCut, double highCut, int order) {
         if (lowCut >= highCut) {
             throw new IllegalArgumentException("Low cutoff frequency must be less than high cutoff frequency.");
         }

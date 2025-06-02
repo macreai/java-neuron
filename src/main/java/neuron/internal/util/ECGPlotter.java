@@ -4,81 +4,79 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.ChartUtils;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ECGPlotter {
-
-    private String csvFilePath;
+    private final String csvFilePath;
 
     public ECGPlotter(String csvFilePath) {
         this.csvFilePath = csvFilePath;
     }
 
-    private XYSeries readECGDataWithFixedSampling() {
-        XYSeries series = new XYSeries("Filtered ECG (250Hz)");
+    public void saveChartAsPNG(String outputPath) {
+        try {
+            XYSeries ecgSeries = new XYSeries("ECG1_Filtered");
+            XYSeries rPeaksSeries = new XYSeries("R Peaks");
 
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
+            BufferedReader br = Files.newBufferedReader(Paths.get(csvFilePath));
+            String header = br.readLine(); // Skip header
+
+            int index = 0;
             String line;
-            boolean firstLine = true;
-            int sampleIndex = 0;
-
             while ((line = br.readLine()) != null) {
-                if (firstLine) {
-                    firstLine = false; // skip header
-                    continue;
+                String[] values = line.split(",");
+                if (values.length < 3) continue;
+
+                double ecgValue = Double.parseDouble(values[1]);
+                boolean isRPeak = Boolean.parseBoolean(values[2]);
+
+                ecgSeries.add(index, ecgValue);
+                if (isRPeak) {
+                    rPeaksSeries.add(index, ecgValue);
                 }
 
-                String[] values = line.split(",");
-
-                double ecgFiltered = Double.parseDouble(values[1]);
-
-                double timeMs = sampleIndex * (1000.0 / 250.0);
-
-                series.add(timeMs, ecgFiltered);
-
-                sampleIndex++;
+                index++;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            XYSeriesCollection dataset = new XYSeriesCollection();
+            dataset.addSeries(ecgSeries);
+            dataset.addSeries(rPeaksSeries);
 
-        return series;
-    }
+            JFreeChart chart = ChartFactory.createXYLineChart(
+                    "ECG Filtered with R-Peaks",
+                    "Sample Index",
+                    "ECG1_Filtered",
+                    dataset
+            );
 
+            XYPlot plot = chart.getXYPlot();
+            XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 
-    private JFreeChart createECGChart(XYSeries series) {
-        XYSeriesCollection dataset = new XYSeriesCollection(series);
+            // ECG line - blue line, no shape
+            renderer.setSeriesPaint(0, Color.BLUE);
+            renderer.setSeriesShapesVisible(0, false);
 
-        return ChartFactory.createXYLineChart(
-                "Filtered ECG Signal",
-                "Time (ms)",
-                "ECG1_Filtered",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                true,
-                false
-        );
-    }
+            renderer.setSeriesPaint(1, Color.RED);
+            renderer.setSeriesLinesVisible(1, false);
+            renderer.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(-2, -2, 4, 4));
+            renderer.setSeriesShapesVisible(1, true);
 
-    public void saveChartAsPNG(String outputFilePath) {
-        XYSeries series = readECGDataWithFixedSampling();
-        JFreeChart chart = createECGChart(series);
+            plot.setRenderer(renderer);
 
-        try {
-            File outputFile = new File(outputFilePath);
-            ChartUtils.saveChartAsPNG(outputFile, chart, 1000, 600);
-            System.out.println("Chart saved to: " + outputFile.getAbsolutePath());
-        } catch (Exception e) {
+            ChartUtils.saveChartAsPNG(new File(outputPath), chart, 1200, 600);
+            System.out.println("Chart saved to: " + outputPath);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }
-

@@ -17,12 +17,12 @@ class ECGPlotterTest {
 
     @Test
     public void pngECG() {
-        String folderPath = "src/main/resources/output_ecg_filtered/";
-        String csvFile = findFirstCSVFile(folderPath);
-        assertNotNull(csvFile, "CSV not found in " + folderPath);
+//        String folderPath = "src/main/resources/output_ecg_filtered/";
+//        String csvFile = findFirstCSVFile(folderPath);
+//        assertNotNull(csvFile, "CSV not found in " + folderPath);
 
         String outputImage = "src/main/resources/ecg_filtered.png";
-        ECGPlotter plotter = new ECGPlotter(csvFile);
+        ECGPlotter plotter = new ECGPlotter("src/main/resources/rpeaks_output.csv");
         plotter.saveChartAsPNG(outputImage);
     }
 }

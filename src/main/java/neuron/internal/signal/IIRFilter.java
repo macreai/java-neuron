@@ -6,11 +6,6 @@ import java.util.List;
 
 interface IIRFilter {
 
-    Dataset<Double> lowPassFilter(Dataset<Double> signal, double samplingRate, int order, double cutoff);
+    List<Double> bandPassFilter(List<Double> signal, double samplingRate, double lowCut, double highCut, int order);
 
-    Dataset<Double> highPassFilter(Dataset<Double> signal, double samplingRate, int order, double cutoff);
-
-    Dataset<Double> bandPassFilter(Dataset<Double> signal, double samplingRate, double lowCut, double highCut, int order);
-
-    Dataset<Double> bandStopFilter(Dataset<Double> signal, double samplingRate, double lowCut, double highCut, int order);
 }
